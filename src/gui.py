@@ -1,6 +1,9 @@
+from datetime import datetime
+import os
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog, simpledialog
+from tkinter import messagebox
 from file_manager import FileManager
 from database_manager import DatabaseManager
 from ai_manager import AIManager
@@ -42,6 +45,8 @@ class FileManagerGUI:
         self.recommendations_listbox = tk.Listbox(self.root, width=50, height=10)
         self.recommendations_listbox.pack(pady=5)
 
+        self.recommendations_listbox.bind("<Double-Button-1>", self.open_recommended_file)
+
     def create_file(self):
         """
         Prompt user to select a directory and enter a file name to create a new file.
@@ -64,23 +69,45 @@ class FileManagerGUI:
         """
         Update the list of recommended files in the GUI.
         """
+        # Get current time
+        current_time = datetime.now()
+
         # Get usage history
         usage_history = self.db_manager.get_usage_history()
         print(f"Usage History: {usage_history}")
 
+        # Train the model
+        self.ai_manager.train_model(usage_history)
+
         # Get recommendations from AI manager
-        recommendations = self.ai_manager.recommend_files(usage_history)
+        recommendations = self.ai_manager.recommend_files(current_time)
         print(f"Recommendations: {recommendations}")
 
         # Clear the listbox
         self.recommendations_listbox.delete(0, tk.END)
 
-        # Insert new recommendations
-        for file in recommendations:
-            self.recommendations_listbox.insert(tk.END, file)
+        # Clear the listbox
+        if not recommendations:
+            self.recommendations_listbox.insert(tk.END, "No recommendations available.")
+        
+        else:
+            # Insert new recommendations
+            for file in recommendations:
+                self.recommendations_listbox.insert(tk.END, file)
 
         # Schedule the next update in 10 seconds
         self.root.after(10000, self.update_recommendations)
+
+    def open_recommended_file(self, event):
+        selection = self.recommendations_listbox.curselection()
+        if selection:
+            index = selection[0]
+            file_path = self.recommendations_listbox.get(index)
+            # Open file with default application
+            try:
+                os.startfile(file_path)
+            except Exception as e:
+                messagebox.showerror("Error", f"Cannot open file: {e}")
 
     def on_close(self):
         """

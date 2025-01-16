@@ -47,14 +47,14 @@ class DatabaseManager:
             limit (int): The maximum number of records to retrieve.
 
         Returns:
-            List[str]: A list of file paths.
+            List[Tuple[str, str]]: A list of tuples containing file paths and timestamps.
         """
         with self.lock:
             cursor = self.connection.cursor()
             cursor.execute('''
-                SELECT file_path FROM usage_history ORDER BY timestamp DESC LIMIT ?
+                SELECT file_path, timestamp FROM usage_history ORDER BY timestamp DESC LIMIT ?
             ''', (limit,))
-            return [row[0] for row in cursor.fetchall()]
+            return cursor.fetchall()
 
     def close(self):
         """
