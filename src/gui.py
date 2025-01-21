@@ -19,7 +19,7 @@ class FileManagerGUI:
         self.ai_manager = AIManager()
 
         # Directory to watch
-        self.watch_path = "C:\\Users\\Musab\\Downloads"  # Adjust to your own path
+        self.watch_path = "C:\\Users\\Musab\\Desktop"  # Adjust to your own path
 
         # Start file observer thread
         self.file_observer_thread = FileObserverThread(self.watch_path, self.db_manager)
@@ -64,6 +64,8 @@ class FileManagerGUI:
         file_path = filedialog.askopenfilename()
         if file_path:
             self.file_manager.delete_file(file_path)
+            # Delete file from database registry
+            self.db_manager.delete_usage(file_path)
 
     def update_recommendations(self):
         """

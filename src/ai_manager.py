@@ -125,5 +125,8 @@ class AIManager:
         features_scaled = self.encode_features(input_df, is_training=False)
 
         distances, indices = self.model.kneighbors(features_scaled)
-        recommeded_files = self.file_paths.iloc[indices[0]].tolist()
-        return recommeded_files
+        recommended_files = self.file_paths.iloc[indices[0]].tolist()
+
+        # Filtering ot files which not exist in system directory
+        existing_files = [file for file in recommended_files if os.path.exists(file)]
+        return recommended_files, existing_files

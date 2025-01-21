@@ -39,6 +39,21 @@ class DatabaseManager:
             ''', (file_path,))
             self.connection.commit()
 
+    def delete_usage(self, file_path):
+        """
+        Delete all records associated with the given file path from the usgage_history table.
+
+        Parameters:
+            file_path (str): The path of the file to delete usage from usage history.
+        """
+        with self.lock:
+            cursor = self.connection.cursor()
+            cursor.execute('''
+                DELETE FROM usage_history WHERE file_path = ?
+            ''', (file_path,))
+            self.connection.commit()
+            print(f"Deleted usage history for: {file_path}")
+
     def get_usage_history(self, limit=50):
         """
         Retrieve the most recent file usage history.

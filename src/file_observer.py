@@ -21,6 +21,11 @@ class FileEventHandler(FileSystemEventHandler):
             print(f"Created: {event.src_path}")
             self.db_manager.insert_usage(event.src_path)
 
+    def on_deleted(self, event):
+        if not event.is_directory:
+            print(f"Deleted: {event.src_path}")
+            self.db_manager.delete_usage(event.src_path)
+
 class FileObserverThread(threading.Thread):
     def __init__(self, path, db_manager):
         super().__init__()
