@@ -50,7 +50,7 @@ class FileObserverThread(threading.Thread):
 
     def scan_existing_files(self):
         """
-        Existing files in the directory arescanned and inserted into the database.
+        Existing files in the directory are scanned and inserted into the database.
         """
         allowed_extensions = [".pdf", ".docx", ".mp3", ".pptx"]
         for root, dirs, files in os.walk(self.path):

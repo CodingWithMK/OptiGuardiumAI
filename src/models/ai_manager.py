@@ -129,4 +129,4 @@ class AIManager:
 
         # Filtering ot files which not exist in system directory
         existing_files = [file for file in recommended_files if os.path.exists(file)]
-        return recommended_files, existing_files
+        return existing_files

@@ -5,6 +5,12 @@ class FileManager:
     def __init__(self):
         pass
 
+    def open_file(self, file_path):
+        if os.path.exists(file_path):
+            os.startfile(file_path)
+        else:
+            raise FileNotFoundError(f"File not found: {file_path}")
+
     def create_file(self, path, name):
         """
         Create a new file at the given path with the specified name.
